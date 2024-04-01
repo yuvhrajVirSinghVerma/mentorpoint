@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "mentorpoint",
+    "slug": "mentorpoint",
+    "scheme": "mentorpoint",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mentorpointapp.mentorpoint"
+    },
+    "android": {
+      "googleServicesFile": "./google-services2.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+    
+      "package": "com.mentorpointapp.mentorpoint",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ef85b519-f94a-4be9-9975-9ac842ccfa60"
+      }
+    }
+   
+    
+  }
+}
