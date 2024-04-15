@@ -268,13 +268,17 @@ const SavedJobsModal = ({ jobs,filterjobs,setisApplied,isShowingApplied}) => {
                     timesection={
                       { marginTop:-8,marginLeft:-12,flexDirection:'column',justifyContent:'space-between',alignItems:'flex-start'}
                     }
-                    applybtnstyle={ele.isApplied?{width:60,marginTop:-6,marginLeft:12}:{width:60,marginTop:10,marginLeft:12}}
-                    detailsstyle={{position:'relative',
+                    applybtnstyle={ele.isApplied?{width:60,marginTop:-6,marginLeft:12}:{width:120,marginTop:10}}
+                    detailsstyle={ele.isApplied?{position:'relative',
                     top:57,
                     width:60,
                     right:-10,
                     borderRadius:0,
                     right:10
+                  }:{top:57,
+                    width:60,
+                    right:-10,
+                    borderRadius:0,
                   }}
                   modalViewStyle={{height:'80%',width:'95%'}}
                   typestyle={{fontSize:14}}

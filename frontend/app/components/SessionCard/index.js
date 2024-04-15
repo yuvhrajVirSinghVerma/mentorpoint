@@ -5,6 +5,8 @@ import {
   Modal,
   TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,7 +25,7 @@ export default function SessionCard(props) {
   const starttime = moment(props.start_time).format("LLL");
   const focus = useIsFocused();
   const { user } = useAuth();
-  console.log("props ", props.mentor_id,user._id);
+  console.log("props ", props?.mentor_id,user?._id);
 
   let [chatUnread, setChatRead] = useState(0);
   useEffect(() => {
@@ -33,8 +35,8 @@ export default function SessionCard(props) {
     props.chats.map((ch) => {
       // console.log("effect ch ",ch)
       if (
-        ch.user._id !=
-        (user.role == "student" ? props.user_id._id : props.mentor_id)
+        ch.user?._id !=
+        (user.role == "student" ? props.user_id?._id : props?.mentor_id)
       ) {
         chatread += ch.read ? 0 : 1;
       }
@@ -42,6 +44,9 @@ export default function SessionCard(props) {
     setChatRead(chatread);
   }, [focus]);
   return (
+    <KeyboardAvoidingView 
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
     <View style={styles.container}>
       <View style={styles.sessionheader}>
         <View style={styles.sessionicon}>
@@ -72,9 +77,9 @@ export default function SessionCard(props) {
         </View>
         {/* //+++++++++++ratings and reviews++++++++++ */}
         <RatingsModal
-          serviceId={props.service_id._id}
-          mentorId={props.service_id.mentor_id}
-          sessionId={props._id}
+          serviceId={props.service_id?._id}
+          mentorId={props.service_id?.mentor_id}
+          sessionId={props?._id}
           isReviewed={props.isReviewed}
         />
 
@@ -163,6 +168,7 @@ export default function SessionCard(props) {
         </View>
       </View>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 function RatingsModal({ serviceId, mentorId,sessionId,isReviewed }) {
@@ -198,7 +204,13 @@ function RatingsModal({ serviceId, mentorId,sessionId,isReviewed }) {
   };
 
   return (
-    <View style={styles.centeredView}>
+  <KeyboardAvoidingView 
+  behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+  keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+  style={{flex:1}}
+
+  >
+      <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -274,7 +286,7 @@ function RatingsModal({ serviceId, mentorId,sessionId,isReviewed }) {
           </View>
         </View>
       </Modal>
-     {mentorId!=user._id && <TouchableOpacity
+     {mentorId!=user?._id && <TouchableOpacity
         style={{
           padding: 8,
           backgroundColor: (isReviewed?"grey":"#0094ff"),
@@ -287,6 +299,7 @@ function RatingsModal({ serviceId, mentorId,sessionId,isReviewed }) {
       </TouchableOpacity>
 }
     </View>
+  </KeyboardAvoidingView>
   );
 }
 
@@ -298,7 +311,7 @@ const styles = StyleSheet.create({
     // marginTop: 22,
   },
   modalView: {
-    height: "35%",
+    height: 300,
     width: "80%",
     margin: 20,
     backgroundColor: "white",
@@ -312,7 +325,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
   },
   button: {
     padding: 8,

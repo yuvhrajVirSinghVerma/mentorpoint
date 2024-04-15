@@ -60,7 +60,7 @@ export default function App() {
   const notificationListener = useRef();
   const responseListener = useRef();
   useEffect(()=>{
-    console.log("onstants.manifest.id ",Constants.manifest.id)
+    console.log("onstants.manifest.id ",Constants.manifest?.id)
     registerForPushNotificationsAsync().then(token => console.log("token : ",token));
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       // setNotification(notification);

@@ -31,6 +31,7 @@ export default function OpportunityCard(props) {
   const addedDate = props.date ? new Date(props.date).toLocaleDateString() : "";
   let { user, showDetails = true, showSave = true } = props;
   // console.log("user in oppurtun ", user.jobs,props);
+  console.log("propppppsss ++++++++++++++++ ",props?.ScreeningQues)
   async function registerForPushNotificationsAsync() {
     let token;
 
@@ -220,13 +221,17 @@ export default function OpportunityCard(props) {
          <>
           <Button
           title={props?.ScreeningQues.length > 0?"Ease Apply":"Apply"}
-          onPress={() => {props?.ScreeningQues.length > 0 ?navigation.navigate("ScreeningQues", {
+          onPress={() => {
+            console.log("props?.ScreeningQues ",props?.ScreeningQues)
+            props?.ScreeningQues.length > 0 ?navigation.navigate("ScreeningQues", {
             ScreeningQues:screeningQues,
             email:props.mentor_id.email,
             id:props._id
           })
             :
-            Linking.openURL(props.application_link)}}
+            Linking.openURL(props.application_link)
+          }
+          }
         />
         {props?.ScreeningQues.length > 0 &&<View style={{position:'absolute',top:10,right:0}}>
         <Entypo name="arrow-right" size={14} color="white" /></View>}

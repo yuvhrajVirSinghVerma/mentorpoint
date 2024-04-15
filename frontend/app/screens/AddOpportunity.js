@@ -26,6 +26,8 @@ import {
   Center,
   NativeBaseProvider,
 } from "native-base";
+import Toast from "react-native-root-toast";
+
 import { MaterialIcons, Entypo, Ionicons } from "@expo/vector-icons";
 const validationSchema = yup.object().shape({
   company: yup.string().required(),
@@ -57,7 +59,7 @@ function AddOpportunityScreen({ visible, setData }) {
     "Other",
   ];
   return (
-    <ScrollView style={{ backgroundColor: "#1e2020" }}>
+    <ScrollView style={{flex:1, backgroundColor: "#1e2020" }}>
       <View style={styles.container}>
         <Formik
           initialValues={{
@@ -87,7 +89,7 @@ function AddOpportunityScreen({ visible, setData }) {
                     temp.company = text;
                     setValue({ ...temp });
                   }}
-                  error={touched?.company && errors.company}
+                  error={touched?.company && errors?.company}
                   inputContainerStyle={{
                     borderBottomWidth: 2, borderWidth: 0 ,borderBottomColor:'white',
                     marginBottom: 20,
@@ -133,7 +135,7 @@ function AddOpportunityScreen({ visible, setData }) {
                     temp.application_link = text;
                     setValue({ ...temp });
                   }}
-                  error={touched.application_link && errors.application_link}
+                  error={touched?.application_link && errors?.application_link}
                   inputContainerStyle={{ borderBottomWidth: 2, borderWidth: 0 ,borderBottomColor:'white'}}
                   inputStyle={{ backgroundColor: "#1e2020", color: "white" }}
                   labelStyle={{
@@ -170,8 +172,9 @@ function AddOpportunityScreen({ visible, setData }) {
                     bg="white"
                     label="Location"
                     name="location"
+                    value={values.location}
                     onInputChange={() => {}}
-                    error={touched.location && errors.location}
+                    error={touched?.location && errors?.location}
                     inputContainerStyle={{
                       borderBottomWidth: 2,
                       borderWidth: 0,
@@ -187,10 +190,17 @@ function AddOpportunityScreen({ visible, setData }) {
                   <TouchableOpacity
                     onPress={() => {
                       let temp = value;
+                      if(!values.location){
+                        Toast.show("Please Add Location", {
+                          duration: Toast.durations.LONG,
+                        });
+                        return
+                      }
                       if (!temp.location) temp.location = [];
                       temp.location = [...temp.location, values.location];
                       console.log("loc ", temp, values.location);
                       setValue({ ...temp });
+                      setFieldValue("location","")
                     }}
                     style={{ position: "absolute", right: 10 }}
                   >
@@ -205,7 +215,7 @@ function AddOpportunityScreen({ visible, setData }) {
                       marginBottom:40
                     }}
                   >
-                    {value.location?.map((loc, ind) => {
+                    {value?.location?.map((loc, ind) => {
                       return (
                         <TouchableOpacity
                           onPress={() => {
@@ -258,7 +268,7 @@ function AddOpportunityScreen({ visible, setData }) {
 
                   <Actionsheet isOpen={isOpen} onClose={onClose}>
                     <Actionsheet.Content>
-                      {types.map((t) => {
+                      {types?.map((t) => {
                         return (
                           <TouchableOpacity
                             style={{
@@ -333,6 +343,9 @@ const SecondRoute = ({ data }) => {
 
   let [selecedQues, setSelectedQues] = useState([]);
   const successResponse = () => {
+    Toast.show("job added successfully", {
+      duration: Toast.durations.LONG,
+    });
     navigation.navigate("Opportunities", {
       buttonTitle: "All Opportunities",
       screenName: "Opportunities",
@@ -340,6 +353,9 @@ const SecondRoute = ({ data }) => {
   };
 
   const failResponse = () => {
+    Toast.show("failed to post this job", {
+      duration: Toast.durations.LONG,
+    });
     navigation.navigate("Home", {
       buttonTitle: "Take me to Home",
       screenName: "Home",
@@ -348,9 +364,11 @@ const SecondRoute = ({ data }) => {
   const addService = (values) => {
     console.log("second ", values, selecedQues);
     let obj={...values,ScreeningQues:selecedQues}
-    opportunitiesApi
+    try {
+      opportunitiesApi
       .addOpportunity({ mentor_id: mentorid, ...obj })
       .then((res) => {
+        console.log("res ",res)
         if (res.ok) {
           successResponse();
         } else {
@@ -360,6 +378,9 @@ const SecondRoute = ({ data }) => {
       .catch((err) => {
         failResponse();
       });
+    } catch (error) {
+      console.log("error ",error)
+    }
   };
 
   const setSelectedQuesfun = (val) => {
@@ -376,18 +397,24 @@ const SecondRoute = ({ data }) => {
       >
         {({ handleChange, values }) => (
           <>
+          {/* <Text style={{color:'white'}}>{JSON.stringify(values)}</Text> */}
             <RNEInput
-              style={{ height: 200, borderWidth: 1 }}
+              name="description"
+              style={{ borderWidth: 1 }}
               label="Tell Us About Role"
               value={values.description}
               onChangeText={handleChange("description")}
-              onInputChange={()=>{}}
+              // onInputChange={()=>{console.log("Valll ",values)}}
               inputContainerStyle={{
                 borderBottomWidth: 2,
                 marginBottom: 20,
                 borderWidth: 0,
-                borderBottomColor:'white'
+                borderBottomColor:'white',
+                minHeight: 40, // Set a minimum height to ensure the TextInput is visible
+                maxHeight: 200, // Set a maximum height if needed to limit the growth
+                // height: Math.max(40, values?.description?.split('\n').length * 40)
               }}
+              multiline={true}
               inputStyle={{ backgroundColor: "#1e2020", color: "white" }}
               labelStyle={{
                 fontSize: 16,
@@ -399,7 +426,10 @@ const SecondRoute = ({ data }) => {
 
             <View style={{marginVertical:40}}>
               <Text style={{color:'white',fontSize:18,fontWeight:'bold'}}>Applicants Collection</Text>
-              <Text style={{color:'white'}}>You Will get Notified Applicants at {user.email}</Text>
+              <View style={{flexDirection:'row'}}>
+              <Text style={{color:'white'}}>You Will get Notified Applicants at </Text>
+              <Text style={{color:'white',fontWeight:'bold'}}>{user.email}</Text>
+              </View>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Center style={{ marginBottom: 40 }}>
@@ -434,7 +464,7 @@ const SecondRoute = ({ data }) => {
                   )}
                 </View>
 
-                <View style={{ justifyContent: "flex-start" }}>
+                <View style={{ position:'relative',left:0 }}>
                   {selecedQues.map((ele,ind) => {
                     return (
                       <View style={{ flexDirection:'row',marginVertical: 7,marginLeft:-40}}>
@@ -460,7 +490,6 @@ const SecondRoute = ({ data }) => {
                 <Actionsheet isOpen={isOpen} onClose={onClose}>
                   <Actionsheet.Content style={{ backgroundColor: "#1e2020" }}>
                     {Questions.map((t, ind) => {
-                      console.log("t ", t);
                       return (
                         <TouchableOpacity
                           style={{
@@ -603,6 +632,11 @@ const Details = ({ props, ind, setQuestions, Questions, setSelectedQues }) => {
                         <TextInput
                           placeholder="Minimum"
                           style={{ borderBottomWidth: 1 }}
+                          onChangeText={(val)=>{
+                            let temp=Questions
+                            temp[ind].minimum=val;
+                            setQuestions([...temp])
+                          }}
                         />
                       </View>
                     ) : (
@@ -632,6 +666,7 @@ const Details = ({ props, ind, setQuestions, Questions, setSelectedQues }) => {
                   title={"Add"}
                   onPress={() => {
                     setSelectedQues(props);
+                    setModalVisible(false)
                   }}
                 />
               </View>
@@ -678,11 +713,28 @@ const Details = ({ props, ind, setQuestions, Questions, setSelectedQues }) => {
 //       return <SecondRoute data={data} />;
 //   }
 // };
-
+{/* <NativeBaseProvider>
+<TabView
+  navigationState={{ index, routes }}
+  renderScene={({ route }) => {
+    console.log("yuvi ", data);
+    switch (route.key) {
+      case "first":
+        return <AddOpportunityScreen setData={setData} />;
+      case "second":
+        return <SecondRoute data={data} />;
+    }
+  }}
+  onIndexChange={setIndex}
+  initialLayout={{ width: layout.width }}
+/>
+</NativeBaseProvider> */}
 export default function TabViewExample() {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
+  const [route, setRoute] = React.useState("first");
+
   const [routes] = React.useState([
     { key: "first", title: "First" },
     { key: "second", title: "Second" },
@@ -690,21 +742,18 @@ export default function TabViewExample() {
   const [data, setData] = useState({});
   return (
     <NativeBaseProvider>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={({ route }) => {
-          console.log("yuvi ", data);
-          switch (route.key) {
-            case "first":
-              return <AddOpportunityScreen setData={setData} />;
-            case "second":
-              return <SecondRoute data={data} />;
-          }
-        }}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-      />
-    </NativeBaseProvider>
+  <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:10}}>
+    <TouchableOpacity
+    onPress={()=>setRoute("first")}
+    ><Text style={route=="first" ?{borderBottomWidth:1,borderBottomColor:'blue',fontWeight:'bold'}:{fontWeight:'bold'}}>About Job</Text></TouchableOpacity>
+
+    <TouchableOpacity
+    onPress={()=>setRoute("second")}
+    ><Text style={route!="first" ?{borderBottomWidth:1,borderBottomColor:'blue',fontWeight:'bold'}:{fontWeight:'bold'}}>Add Screening Questions</Text></TouchableOpacity>
+  </View>
+
+    {route=="first"?<AddOpportunityScreen setData={setData} />:<SecondRoute data={data}/>}
+  </NativeBaseProvider>
   );
 }
 const styles = StyleSheet.create({

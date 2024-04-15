@@ -34,39 +34,41 @@ export const AppliedJobs=async(req,res)=>{
     let {id}=data
     console.log("body ",data)
     let url='mentorpoint://'
+    console.log("confirmation applied job")
     const confirmationMail = (username, session) => {
       const message = `
+      <div>
+<h3>About Applicant</h3>
+<div style="background-color:#2089dc;color:white;padding:10px">
+
         <h3>New Applicant ${data.name}</h3>
-        <h3>Bio: ${data?.bio}</h3>
-        <h3>Skills: ${data?.skills.map((sk)=>sk)}</h3>
+        <h4>ApplicantContact No. ${data?.mno}</h4>
+        <h4>Bio: ${data?.bio}</h4>
+        <h4>Skills: ${data?.skills.map((sk)=>sk)}</h4>
+        </div>
         <br>
+        <h2>Screening Questions</h2>
+        <div style="border: 2px solid;
+    overflow: scroll;
+    max-height: 300px;padding:10px";>
         ${data.question.map((q)=>{
           return (
-            `<p>${q.type=="Custom"?q.selectedQues:q.Question}</p>
-            <p>Answer : ${q.selectedAns}</p>
-            ${q?.idealAns ?`<p>Ideal Answer : ${q.idealAns}</p>`:`<p></p>`}
+            `<div style="border-width:2px">
+            <h4>${q.type=="Custom"?q.selectedQues:q.Question}</h4>
+           ${q?.selectedAns ?`<p> Answer : ${q.selectedAns}</p>`:`<p></p>`}
+            ${q?.idealAns ?`<p>Ideal Answer : ${q.idealAns}</p>`:`<p></p>
+            </div>
+            `}
             `
           )
         })}
-        Regards,<br>Mentorpoint App.</h3>
-        <p>Contact No. ${data?.mno}</p>
-        <p>
-        <a href="mentorpoint://">Download</a>
-        </p>
-        <p>
-        <a href=mentorpoint://>Download2</a>
-        </p>
-        <p>Open your <a href="mentorpoint://Login">profile</a></p>
-        <p>Open your <a href="http://Login">profile2</a></p>
         <br>
-        <img src="https://drive.google.com/uc?export=view&id=1q6aqxnQ_BMXjFC5O6FppM9OXzrZAJPp_" width="100px" height="100px"/>
-
-        <script>
-        var redirectToApp = function(){
-          window.location.replace=${url}
-        } 
-         window.location = redirectToApp()
-        </script>
+        </div>
+        <div>
+        <h4>Regards,<br>Mentorpoint App.</h4>
+        </div>
+        </div>
+       
     `;
       return message;
     };
@@ -78,13 +80,13 @@ export const AppliedJobs=async(req,res)=>{
       html: confirmationMail(),
     };
 
-    // transporter.sendMail(mailOptions, function (err, data) {
-    //   if (err) {
-    //     console.log("Error " + err);
-    //   } else {
-    //     console.log("Email sent successfully");
-    //   }
-    // });
+    transporter.sendMail(mailOptions, function (err, data) {
+      if (err) {
+        console.log("Error " + err);
+      } else {
+        console.log("Email sent successfully");
+      }
+    });
     const userdata = await usersSchema
         .findById({_id:decoded.user._id})
         .select("-password");

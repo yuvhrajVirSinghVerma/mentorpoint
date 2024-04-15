@@ -24,14 +24,27 @@ import { Entypo } from "@expo/vector-icons";
 import opportunitiesApi from "../apis/opportunities";
 import axios from "axios";
 import Toast from "react-native-root-toast";
+import { useIsFocused } from "@react-navigation/native";
 
 export default ScreeningQues = ({ route, navigation }) => {
   let { ScreeningQues, email ,id} = route.params;
-  let [question, setQuestions] = useState(ScreeningQues);
+  let [question, setQuestions] = useState([]);
   const { user } = useAuth();
-  console.log("user ", user);
+  // console.log("user ", user);
+  console.log("ScreeningQues insideeee ++++++++++++ ",question,user)
   const [mno, setMno] = useState(user.mobile_number);
   const [ResumeLink, setResumeLink] = useState("");
+
+  const focus=useIsFocused()
+  useEffect(()=>{
+    if(focus){
+    console.log("called insied")
+      setQuestions([...ScreeningQues])
+    }
+    return ()=>{
+      setQuestions([])
+    }
+  },[focus])
   return (
     <ScrollView
       stickyHeaderIndices={[0]}
@@ -61,16 +74,17 @@ export default ScreeningQues = ({ route, navigation }) => {
               style={{
                 marginVertical: 40,
                 height: 70,
-                width: 250,
                 flexDirection: "row",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
+                marginHorizontal:10
               }}
             >
-              <View>
-                <AppImagePicker imageUri={null} />
+              <View >
+                <AppImagePicker 
+                imageUri={null} />
               </View>
-              <View>
+              <View style={{width:"70%"}}>
                 <Text
                   style={{ fontWeight: "bold", color: "white", fontSize: 18 }}
                 >
@@ -120,6 +134,7 @@ export default ScreeningQues = ({ route, navigation }) => {
               <TextInput
                 placeholder="Mobile Number"
                 value={mno}
+                placeholderTextColor={'white'}
                 style={{
                   color: "white",
                   fontSize: 16,
@@ -180,12 +195,12 @@ export default ScreeningQues = ({ route, navigation }) => {
                         style={{ color: "white", width: 150 }}
                         onValueChange={(itemValue, itemIndex) => {
                           let temp = ScreeningQues;
-                          console.log("temp ",temp)
+                          // console.log("temp ",temp)
                           temp[ind] = {
                             ...sq,
                             selectedAns: itemValue,
                           };
-                          console.log("temp after ",temp)
+                          // console.log("temp after ",temp)
 
                           setQuestions([...temp]);
                         }}
@@ -275,7 +290,7 @@ export default ScreeningQues = ({ route, navigation }) => {
             <Button
               title="Submit"
               onPress={async () => {
-                console.log("email ", email, question, mno, ResumeLink);
+                // console.log("email ", email, question, mno, ResumeLink);
               //   const formData = new FormData();
                 let data = {
                   email,

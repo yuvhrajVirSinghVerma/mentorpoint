@@ -3,7 +3,7 @@
     "name": "mentorpoint",
     "slug": "mentorpoint",
     "scheme": "mentorpoint",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "splash": {
@@ -12,7 +12,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/ef85b519-f94a-4be9-9975-9ac842ccfa60"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -27,7 +28,6 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
       },
-    
       "package": "com.mentorpointapp.mentorpoint",
       "versionCode": 1
     },
@@ -38,8 +38,9 @@
       "eas": {
         "projectId": "ef85b519-f94a-4be9-9975-9ac842ccfa60"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
-   
-    
   }
 }

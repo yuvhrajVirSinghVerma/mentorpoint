@@ -33,7 +33,7 @@ export default function SessionsScreen({ navigation }) {
     setSessions([]);
     const payload =
       user?.role == "student"
-        ? { user_id: user._id }
+        ? { user_id: user?._id }
         : { mentor_id: user?._id };
     sessionsApi.getSessions(payload).then((res) => {
       if (res.ok == true) {
@@ -78,11 +78,11 @@ export default function SessionsScreen({ navigation }) {
             <SessionCard
               {...item}
               handleChat={() => {
-                navigation.navigate("Chats", { sessionid: item._id });
+                navigation.navigate("Chats", { sessionid: item?._id });
               }}
             />
           )}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item?._id}
           // refreshControl={
           //   <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
           // }

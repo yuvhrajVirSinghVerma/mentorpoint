@@ -162,8 +162,9 @@ export default function ScheduleScreen({navigation}) {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "space-evenly",
               flexWrap: "wrap",
+              alignItems:'center'
             }}
           >
             <View style={{ flexDirection: "row" }}>
@@ -200,19 +201,16 @@ export default function ScheduleScreen({navigation}) {
                 onPress={() => setModal2(true)}
               />
             </View>
-            <Button
-              title="Add"
+            <View style={{backgroundColor:'#2089dc',borderRadius:1000,height:40,maxWidth:40,flex:1,justifyContent:'center',alignItems:'center'}}>
+            <TouchableOpacity
               onPress={() => {
                 handleAddSlot();
               }}
-              buttonStyles={{
-                paddingVertical: 10,
-                marginVertical: 10,
-                marginHorizontal: 10,
-                borderRadius: 5,
-              }}
-              IconComponent={<Ionicons name="add" size={25} color="white" />}
-            />
+              style={{flex:1,justifyContent:'center',alignItems:'center'}}
+            >
+              <Ionicons name="add" size={25} color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>

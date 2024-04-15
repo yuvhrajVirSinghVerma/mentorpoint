@@ -22,7 +22,7 @@ export default function OppotunitiesScreen() {
   const { user } = useAuth();
   const focus = useIsFocused();
 
-  const [filter, setfilter] = useState();
+  const [filter, setfilter] = useState("");
   const [all, setAll] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +36,7 @@ export default function OppotunitiesScreen() {
     setOpportunities([...temp]);
   };
   useEffect(() => {
+   if(focus){
     setLoading(true);
     getOpportunities().then((data) => {
       console.log("oppur dt ", data);
@@ -43,6 +44,7 @@ export default function OppotunitiesScreen() {
       setAll(data);
       setLoading(false);
     });
+   }
     // const res =  opportunitiesApi.getOpportunities().then((res)=>{
     //   setOpportunities(res.data.data);
 
@@ -83,34 +85,39 @@ export default function OppotunitiesScreen() {
             let filterlist = [];
             let fliter = val.toLowerCase();
             setfilter(val);
-            if (val === "" || !val) {
-              setOpportunities([...all]);
-              return;
-            }
-            all.map((o) => {
-              if (JSON.stringify(o.location).toLowerCase().includes(fliter)) {
-                filterlist.push(o);
-              }
-              if (o.company.toLowerCase().includes(fliter)) {
-                filterlist.push(o);
-              }
-              if (o.job_title.toLowerCase().includes(fliter)) {
-                filterlist.push(o);
-              }
-              if (o.type?.toLowerCase().includes(fliter)) {
-                filterlist.push(o);
-              }
-            });
-            console.log("val ", fliter, filterlist, val === "", !val, val);
+            // if (val === "" || !val) {
+            //   setOpportunities([...all]);
+            //   return;
+            // }
+            // all.map((o) => {
+            //   console.log("ooooo ",o)
+            //   if (JSON.stringify(o.location).toLowerCase().includes(fliter)) {
+            //     filterlist.push(o);
+            //   }
+            //   if (o.company.toLowerCase().includes(fliter)) {
+            //     filterlist.push(o);
+            //   }
+            //   if (o.job_title.toLowerCase().includes(fliter)) {
+            //     filterlist.push(o);
+            //   }
+            //   if (o.type?.toLowerCase().includes(fliter)) {
+            //     filterlist.push(o);
+            //   }
+            // });
+            // console.log("val ", fliter, filterlist, val === "", !val, val);
 
-            setOpportunities([...filterlist]);
+            // setOpportunities([...filterlist]);
           }}
         />
       </View>
       {opportunities.length > 0 ? (
         <FlatList
           showsVerticalScrollIndicator={false}
-          data={opportunities}
+          data={opportunities.filter((o) =>
+
+            (JSON.stringify(o.location).toLowerCase().includes(filter.toLowerCase()) ||o.company.toLowerCase().includes(filter.toLowerCase())||o.job_title.toLowerCase().includes(filter.toLowerCase()) || o.type?.toLowerCase().includes(filter.toLowerCase()))
+            
+          )}
           renderItem={({ item, index }) => (
             <OpportunityCard
               {...item}
